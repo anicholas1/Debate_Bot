@@ -70,9 +70,8 @@ class Neural_Network:
             self.final_output_derivative.append(self.sigmoid(self.z_inputs_list[1][i], derivative=True))
         print("derivative", self.final_output_derivative)
 
-        final_delta = (error)*self.final_output_derivative
-        part_deriviative = np.dot(self.activity[0], final_delta)
-
+        final_delta = ((-error)*self.final_output_derivative)
+        part_derivative2 = np.dot(self.activity[0].T, final_delta)
 
 
     def cost(self, y, yhat):
@@ -85,6 +84,11 @@ class Neural_Network:
             return 1 / (1 - np.exp(-z))
         else:
             return self.sigmoid(z) * (1 - self.sigmoid(z))
+
+
+
+class Trainer():
+    x = 1
 
 
 shape = [2, 3, 1]
