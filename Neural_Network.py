@@ -18,7 +18,6 @@ class Neural_Network:
 
         self.train_data = []
 
-
         '''Takes layer size (2, 3, 1) and creates weight matrices by grouping them in twos. Since weights go from 2 to 3
         then 3 to 1.
         Randomizes them with normal distribution '''
@@ -51,32 +50,35 @@ class Neural_Network:
                 self.activity.append(self.sigmoid(self.z_inputs_list[i]))
                 print("output Activity:", self.activity[i])
 
-    def cost(self, yhat, y):
-        error = np.subtract(y, yhat)
-        print(error)
-        return error
-
 
     def train_network(self, train_data):
+        # convert training data into proper sized array
         self.train_data = train_data
         self.train_data = np.array(train_data)
         self.train_data.reshape(3,1)
-        #self.output_list = np.array(self.output_list)
-        final_output = self.activity[-1]
-        final_output = np.array(final_output)
-        final_output = final_output.reshape(3,1)
-        error = self.cost(final_output, train_data)
 
-        # calculate f'(z) for each input
-        for i in range(len(self.final_output)):
-            self.final_output_derivative.append(self.sigmoid(self.final_output[i], derivative=True))
+        # reshape final output activity into 3x1 matrix to subtract elementwise from y for error
+        yhat = self.activity[-1]
+        yhat = np.array(yhat)
+        yhat = yhat.reshape(3,1)
+        error = self.cost(train_data, yhat)
+
+        '''calculate f'(z) for final layer. This is the derivative of our sigmoid
+        function to calculate Backpropgation Delta'''
+
+        for i in range(len(self.z_inputs_list[-1])):
+            self.final_output_derivative.append(self.sigmoid(self.z_inputs_list[1][i], derivative=True))
         print("derivative", self.final_output_derivative)
 
+        final_delta = (error)*self.final_output_derivative
+        part_deriviative = np.dot(self.activity[0], final_delta)
 
-        delta = 2
 
 
-
+    def cost(self, y, yhat):
+        error = np.subtract(y, yhat)
+        print(error)
+        return error
 
     def sigmoid(self, z, derivative=False):
         if not derivative:
